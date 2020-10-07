@@ -1,9 +1,8 @@
 """
-Name: Caleb Webster
-Date: 2/10/2020
-Brief Project Description: Kivy app that displays a list of tasks in GUI form.
+Task Tracker
+8/10/2020
+Kivy app that displays a list of tasks in GUI form.
 User can add new tasks, change task sorting, and mark tasks as completed/uncompleted.
-GitHub URL: https://github.com/cp1404-students/travel-tracker-assignment-2-CalebWebsterJCU
 """
 
 from kivy.app import App
