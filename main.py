@@ -43,7 +43,7 @@ class TaskTrackerApp(App):
         """Construct the GUI, setting string and list properties to starting values."""
         self.root = Builder.load_file("app.kv")
         Window.size = (800, 600)
-        self.info_panel_text = "Welcome to Task Tracker 2.0"
+        self.info_panel_text = "Welcome to Task Tracker 1.0"
         self.tasks_to_complete_text = "Tasks to complete: {}".format(self.task_collection.get_num_of_uncompleted_tasks())
         # Default starting spinner selection must always be the same, so keys are sorted
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
