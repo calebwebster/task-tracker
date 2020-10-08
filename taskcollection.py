@@ -40,10 +40,16 @@ class TaskCollection:
                                        task.is_completed), file=file_out)
         file_out.close()
 
-    def add_tasks(self, task=Task()):
+    def add_task(self, task=Task()):
         """Add Task object to tasks list and return a string confirming that task was added."""
         self.tasks.append(task)
         return str(task) + " added."
+
+    def remove_task(self, task=Task()):
+        """Remove Task object from tasks list and return the task that was removed."""
+        if task in self.tasks:
+            self.tasks.remove(task)
+            return str(task) + " removed."
 
     def get_num_of_uncompleted_tasks(self):
         """Return the number of uncompleted tasks in tasks."""

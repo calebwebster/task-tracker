@@ -10,6 +10,7 @@ from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.properties import ListProperty
 from kivy.properties import NumericProperty
+from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from task import Task
@@ -25,6 +26,12 @@ COMPLETED_COLOR = (.4, .4, .4, 1)
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)
 
 
+class SpinnerOption(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.background_color = .6, .2, .4, 1
+
+
 class TaskTrackerApp(App):
     """App that interacts with GUI and utilises Task and TaskCollection classes."""
 
@@ -34,12 +41,14 @@ class TaskTrackerApp(App):
     current_spinner_selection = StringProperty()
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
+    spinner_options = ObjectProperty(SpinnerOption)
 
     def __init__(self, **kwargs):
         """Initialize TravelTrackerApp class, load tasks into task_collection from tasks.csv."""
         super().__init__(**kwargs)
         self.task_collection = TaskCollection()
         self.task_collection.load_tasks(TASKS_FILE_NAME)
+        self.buttons = []
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
@@ -95,6 +104,7 @@ class TaskTrackerApp(App):
             button.bind(on_release=self.mark_completed_or_uncompleted)
             button.task = task  # store reference to button's task object
             self.root.ids.tasks_box.add_widget(button)
+            self.buttons.append(button)
         self.number_of_buttons = len(self.task_collection.tasks)
         self.tasks_box_height = self.number_of_buttons * 50
 
@@ -112,7 +122,7 @@ class TaskTrackerApp(App):
                     self.info_panel_text = "Priority must be > 0"
                 else:
                     # task_collection.add_task() returns a confirmation message:
-                    confirmation = self.task_collection.add_tasks(Task(name, subject, priority))
+                    confirmation = self.task_collection.add_task(Task(name, subject, priority))
                     self.info_panel_text = confirmation
 
                     # Utilize variable arguments to clear text of any amount of widgets
@@ -132,6 +142,15 @@ class TaskTrackerApp(App):
         """Clear the text of any number of any number of widgets passed in."""
         for widget in widgets:
             widget.text = ""
+
+    def remove_completed_tasks(self):
+        """Remove completed task buttons."""
+        if self.task_collection.get_num_of_uncompleted_tasks() < len(self.task_collection.tasks):
+            self.info_panel_text = "All completed tasks removed."
+        for button in self.buttons:
+            if button.task.is_completed:
+                self.task_collection.remove_task(button.task)
+                self.root.ids.tasks_box.remove_widget(button)
 
 
 if __name__ == '__main__':
