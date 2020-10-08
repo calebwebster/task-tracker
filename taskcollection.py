@@ -23,10 +23,13 @@ class TaskCollection:
         """Read tasks from a file and add to tasks list."""
         file_in = open(file_name, 'r')
         for line in file_in:
-            parts = line.strip().split(",")
-            parts[2] = int(parts[2])
-            parts[3] = parts[3] == "True"
-            self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3]))
+            try:
+                parts = line.strip().split(",")
+                parts[2] = int(parts[2])
+                parts[3] = parts[3] == "True"
+                self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3]))
+            except IndexError:
+                continue
         file_in.close()
 
     def save_tasks(self, file_name):

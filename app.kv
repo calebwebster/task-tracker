@@ -11,7 +11,7 @@ BoxLayout:
             values: app.spinner_selections
             on_text:
                 app.current_spinner_selection = self.text
-                app.refresh_buttons()
+#                app.refresh_buttons()
         Label:
             text: "Add New Task:"
         Label:
@@ -44,9 +44,17 @@ BoxLayout:
             id: tasks_to_complete
             size_hint_y: 0.1
             text: app.tasks_to_complete_text
-        BoxLayout:
-            orientation: "vertical"
-            id: tasks_box
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            GridLayout:
+                rows: app.number_of_buttons
+                cols: 1
+                row_default_height: 50
+                row_force_default: True
+                id: tasks_box
+                size_hint_y: None
+                height: app.tasks_box_height
         Label:
             id: info_panel
             size_hint_y: 0.1

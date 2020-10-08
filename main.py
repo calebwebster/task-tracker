@@ -9,6 +9,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.properties import ListProperty
+from kivy.properties import NumericProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from task import Task
@@ -31,6 +32,8 @@ class TaskTrackerApp(App):
     info_panel_text = StringProperty()
     spinner_selections = ListProperty()
     current_spinner_selection = StringProperty()
+    number_of_buttons = NumericProperty()
+    tasks_box_height = NumericProperty()
 
     def __init__(self, **kwargs):
         """Initialize TravelTrackerApp class, load tasks into task_collection from tasks.csv."""
@@ -78,6 +81,7 @@ class TaskTrackerApp(App):
         function binding, and background colours depending on whether task has been
         completed or not."""
         self.root.ids.tasks_box.clear_widgets()
+        self.number_of_buttons = 0
         # Get sorting attribute from current spinner selection
         sorting_attribute = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.current_spinner_selection]
         self.task_collection.sort_tasks(sorting_attribute)
@@ -86,11 +90,13 @@ class TaskTrackerApp(App):
             button = Button(
                 id="button_{}".format(button_number),
                 text=str(task),
-                background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR
+                background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             button.bind(on_release=self.mark_completed_or_uncompleted)
             button.task = task  # store reference to button's task object
             self.root.ids.tasks_box.add_widget(button)
+        self.number_of_buttons = len(self.task_collection.tasks)
+        self.tasks_box_height = self.number_of_buttons * 50
 
     def add_task(self):
         """Get task name, subject, and priority, and if they are valid,
