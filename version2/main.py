@@ -16,14 +16,11 @@ from kivy.uix.button import Button
 from version1.task import Task
 from version1.taskcollection import TaskCollection
 import pygame
-from pygame import mixer
 
 pygame.init()
 
-SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed",
-                                    "Priority": "priority",
-                                    "Subject": "subject",
-                                    "Name": "name"}
+SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed", "Priority": "priority",
+                                    "Subject": "subject", "Name": "name"}
 STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)
@@ -60,7 +57,6 @@ class TaskTrackerApp(App):
         self.root = Builder.load_file("app.kv")
         Window.size = (800, 600)
         self.info_panel_text = "Welcome to Task Tracker 1.0"
-        self.tasks_to_complete_text = "Tasks to complete: {}".format(self.task_collection.get_num_of_uncompleted_tasks())
         # Default starting spinner selection must always be the same, so keys are sorted
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
         self.current_spinner_selection = self.spinner_selections[STARTING_SPINNER_SELECTION_INDEX]
@@ -72,9 +68,9 @@ class TaskTrackerApp(App):
         self.task_collection.save_tasks(TASKS_FILE_NAME)
 
     def mark_completed_or_uncompleted(self, instance):
-        """If task is completed, mark it as uncompleted. If task is uncompleted, mark it as completed.
-        Refresh buttons, update tasks_to_complete and display info message according to task state
-        and importance."""
+        """If task is completed, mark it as uncompleted. If task is uncompleted, mark it as
+        completed. Refresh buttons, update tasks_to_complete and display info message according to
+        task state and importance."""
         # Access button's task object
         task = instance.task
         if task.is_completed:
@@ -88,7 +84,6 @@ class TaskTrackerApp(App):
             message += " Great work!" if task.is_important() else ""
 
         self.info_panel_text = message
-        self.tasks_to_complete_text = "Tasks to complete: {}".format(self.task_collection.get_num_of_uncompleted_tasks())
         self.refresh_buttons()
 
     def refresh_buttons(self):
@@ -113,6 +108,9 @@ class TaskTrackerApp(App):
             self.buttons.append(button)
         self.number_of_buttons = len(self.task_collection.tasks)
         self.tasks_box_height = self.number_of_buttons * 50
+
+        num_of_uncompleted_tasks = self.task_collection.get_num_of_uncompleted_tasks()
+        self.tasks_to_complete_text = "Tasks to complete: {}".format(num_of_uncompleted_tasks)
 
     def add_task(self):
         """Get task name, subject, and priority, and if they are valid,
@@ -161,8 +159,7 @@ class TaskTrackerApp(App):
     @staticmethod
     def play_sound(sound):
         """Play the sound of the file passed in using playsound module."""
-        mixer.Channel(0).play(mixer.Sound(sound))
-
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound(sound))
 
 
 if __name__ == '__main__':
