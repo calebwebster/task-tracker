@@ -83,6 +83,7 @@ class TaskTrackerApp(App):
             message += " Get to work!" if task.is_important() else ""
         else:
             task.mark_as_completed()
+            self.play_sound(COMPLETED_SOUND)
             message = "You completed {}.".format(task.name)
             message += " Great work!" if task.is_important() else ""
 
@@ -107,7 +108,6 @@ class TaskTrackerApp(App):
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             button.bind(on_release=self.mark_completed_or_uncompleted)
-            button.bind(on_release=self.play_completed_sound)
             button.task = task  # store reference to button's task object
             self.root.ids.tasks_box.add_widget(button)
             self.buttons.append(button)
@@ -159,9 +159,9 @@ class TaskTrackerApp(App):
             widget.text = ""
 
     @staticmethod
-    def play_completed_sound(self):
+    def play_sound(sound):
         """Play the sound of the file passed in using playsound module."""
-        mixer.Channel(0).play(mixer.Sound('trumpet.wav'))
+        mixer.Channel(0).play(mixer.Sound(sound))
 
 
 
