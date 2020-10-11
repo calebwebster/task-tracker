@@ -13,8 +13,12 @@ from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
-from v1.task import Task
-from v1.taskcollection import TaskCollection
+from version1.task import Task
+from version1.taskcollection import TaskCollection
+import pygame
+from pygame import mixer
+
+pygame.init()
 
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed",
                                     "Priority": "priority",
@@ -24,6 +28,7 @@ STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)
+COMPLETED_SOUND = "trumpet.wav"
 
 
 class SpinnerOption(Button):
@@ -102,6 +107,7 @@ class TaskTrackerApp(App):
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             button.bind(on_release=self.mark_completed_or_uncompleted)
+            button.bind(on_release=self.play_completed_sound)
             button.task = task  # store reference to button's task object
             self.root.ids.tasks_box.add_widget(button)
             self.buttons.append(button)
@@ -137,12 +143,6 @@ class TaskTrackerApp(App):
         else:
             self.info_panel_text = "All fields must be completed"
 
-    @staticmethod
-    def clear_widget_text(*widgets):
-        """Clear the text of any number of any number of widgets passed in."""
-        for widget in widgets:
-            widget.text = ""
-
     def remove_completed_tasks(self):
         """Remove completed task buttons."""
         if self.task_collection.get_num_of_uncompleted_tasks() < len(self.task_collection.tasks):
@@ -151,6 +151,18 @@ class TaskTrackerApp(App):
             if button.task.is_completed:
                 self.task_collection.remove_task(button.task)
                 self.root.ids.tasks_box.remove_widget(button)
+
+    @staticmethod
+    def clear_widget_text(*widgets):
+        """Clear the text of any number of any number of widgets passed in."""
+        for widget in widgets:
+            widget.text = ""
+
+    @staticmethod
+    def play_completed_sound(self):
+        """Play the sound of the file passed in using playsound module."""
+        mixer.Channel(0).play(mixer.Sound('trumpet.wav'))
+
 
 
 if __name__ == '__main__':

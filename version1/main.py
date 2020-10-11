@@ -13,8 +13,8 @@ from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
-from v1.task import Task
-from v1.taskcollection import TaskCollection
+from version1.task import Task
+from version1.taskcollection import TaskCollection
 
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed",
                                     "Priority": "priority",
