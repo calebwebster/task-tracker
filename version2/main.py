@@ -13,14 +13,13 @@ from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
-from version1.task import Task
-from version1.taskcollection import TaskCollection
+from version2.task import Task
+from version2.taskcollection import TaskCollection
 import pygame
 
 pygame.init()
 
-SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed", "Priority": "priority",
-                                    "Subject": "subject", "Name": "name"}
+SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject", "Name": "name"}
 STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)
@@ -51,6 +50,7 @@ class TaskTrackerApp(App):
         self.task_collection = TaskCollection()
         self.task_collection.load_tasks(TASKS_FILE_NAME)
         self.buttons = []
+        self.sorting_is_reversed = False
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
@@ -94,7 +94,7 @@ class TaskTrackerApp(App):
         self.number_of_buttons = 0
         # Get sorting attribute from current spinner selection
         sorting_attribute = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.current_spinner_selection]
-        self.task_collection.sort_tasks(sorting_attribute)
+        self.task_collection.sort_tasks(key=sorting_attribute, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
             button = Button(
@@ -149,6 +149,11 @@ class TaskTrackerApp(App):
             if button.task.is_completed:
                 self.task_collection.remove_task(button.task)
                 self.root.ids.tasks_box.remove_widget(button)
+
+    def reverse_sorting(self):
+        """Reverse the sorting of tasks."""
+        self.sorting_is_reversed = not self.sorting_is_reversed
+        self.refresh_buttons()
 
     @staticmethod
     def clear_widget_text(*widgets):

@@ -14,8 +14,12 @@ BoxLayout:
             on_text:
                 app.current_spinner_selection = self.text
                 app.refresh_buttons()
-        Label:
-            text: "Add New Task:"
+#        Label:
+#            text: "Add New Task:"
+        Button:
+            text: "Reverse Sorting"
+            background_color: .6, .2, .4, 1
+            on_press: app.reverse_sorting()
         Label:
             text: "Name:"
         TextInput:
