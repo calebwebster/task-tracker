@@ -33,6 +33,10 @@ class TaskLabel(Label):
     pass
 
 
+class BoxLayout(BoxLayout, Button):
+    pass
+
+
 class SortingSpinnerOption(Button):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -47,10 +51,6 @@ class PrioritySpinnerOption(Button):
         self.background_color = 0, .6, .6, 1
         self.size_hint_y = None
         self.height = "48dp"
-
-
-class BoxLayout(BoxLayout, Button):
-    pass
 
 
 class TaskTrackerApp(App):
