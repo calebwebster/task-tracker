@@ -5,6 +5,9 @@ Kivy app that displays a list of tasks in GUI form.
 User can add new tasks, change task sorting, and mark tasks as completed/uncompleted.
 """
 
+# TODO: due date input
+# TODO: don't sort by completed button
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
