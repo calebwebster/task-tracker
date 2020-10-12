@@ -49,6 +49,11 @@ BoxLayout:
             id: priority_input
             multiline: False
             write_tab: False
+        TextInput:
+            hint_text: "Due Date (optional):"
+            id: due_date_input
+            multiline: False
+            write_tab: False
         Button:
             text: "Add Task"
             background_color: .6, .2, .4, 1
@@ -56,7 +61,7 @@ BoxLayout:
         Button:
             text: "Clear"
             background_color: .6, .2, .4, 1
-            on_press: app.clear_widget_text(name_input, subject_input, priority_input, info_panel)
+            on_press: app.clear_widget_text(name_input, subject_input, priority_input, due_date_input, info_panel)
         Button:
             text: "Remove Completed"
             background_color: .6, .2, .4, 1
