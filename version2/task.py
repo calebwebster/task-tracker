@@ -7,7 +7,7 @@ import datetime
 class Task:
     """This class stores information about a task."""
 
-    def __init__(self, name="", subject="", priority=1, due_date="", is_completed=False):
+    def __init__(self, name="", subject="", priority=1, due_date="None", is_completed=False):
         """Initialize Task class, setting name, subject, priority and is_completed."""
         self.name = name
         self.subject = subject

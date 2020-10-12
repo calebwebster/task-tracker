@@ -2,7 +2,7 @@
 Functionality: loading & saving tasks to file, adding tasks to list, returning info, sorting."""
 
 from operator import attrgetter
-from version1.task import Task
+from version2.task import Task
 
 
 class TaskCollection:
@@ -26,8 +26,8 @@ class TaskCollection:
             try:
                 parts = line.strip().split(",")
                 parts[2] = int(parts[2])
-                parts[3] = parts[3] == "True"
-                self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3]))
+                parts[4] = parts[4] == "True"
+                self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3], parts[4]))
             except IndexError:
                 continue
         file_in.close()
@@ -36,8 +36,8 @@ class TaskCollection:
         """Write all tasks to a file."""
         file_out = open(file_name, 'w')
         for task in self.tasks:
-            print("{},{},{},{}".format(task.name, task.subject, task.priority,
-                                       task.is_completed), file=file_out)
+            print("{},{},{},{},{}".format(task.name, task.subject, task.priority,
+                                          task.due_date, task.is_completed), file=file_out)
         file_out.close()
 
     def add_task(self, task=Task()):

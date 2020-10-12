@@ -122,12 +122,12 @@ class TaskTrackerApp(App):
                 # text="{}  in  {}".format(task.name, task.subject),
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
-            name_label = TaskLabel(
-                text=task.name
-            )
-            subject_label = TaskLabel(
-                text=task.subject,
-                size_hint_x=0.6
+            name_label = TaskLabel(text=task.name)
+            subject_label = TaskLabel(text=task.subject,)
+            due_date_label = TaskLabel(
+                text=task.due_date,
+                size_hint_x=0.7,
+                color=(1, 0, 0, 1) if task.is_due() else (1, 1, 1, 1)
             )
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
@@ -139,6 +139,7 @@ class TaskTrackerApp(App):
             priority_spinner.task = task
             task_button.add_widget(name_label)
             task_button.add_widget(subject_label)
+            task_button.add_widget(due_date_label)
             self.root.ids.tasks_box.add_widget(task_button)
             self.root.ids.tasks_box.add_widget(priority_spinner)
             self.buttons.append(task_button)
@@ -154,6 +155,7 @@ class TaskTrackerApp(App):
         name = self.root.ids.name_input.text.title()
         subject = self.root.ids.subject_input.text.title()
         priority = self.root.ids.priority_input.text
+        due_date = self.root.ids.due_date_input.text
 
         if name and subject and priority:
             try:
@@ -162,14 +164,15 @@ class TaskTrackerApp(App):
                     self.info_panel_text = "Priority must be > 0"
                 else:
                     # task_collection.add_task() returns a confirmation message:
-                    confirmation = self.task_collection.add_task(Task(name, subject, priority))
+                    confirmation = self.task_collection.add_task(Task(name, subject, priority, due_date))
                     self.info_panel_text = confirmation
 
                     # Utilize variable arguments to clear text of any amount of widgets
                     self.clear_widget_text(
                         self.root.ids.name_input,
                         self.root.ids.subject_input,
-                        self.root.ids.priority_input
+                        self.root.ids.priority_input,
+                        self.root.ids.due_date_input
                     )
                     self.refresh_buttons()
             except ValueError:
