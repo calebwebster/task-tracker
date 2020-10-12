@@ -1,8 +1,18 @@
+<Widget>:
+    font_size: 17
+
 <PrioritySpinner>:
-    values: ("+1", "-1")
+    values: ("-1", "+1")
+    font_size: 18
     size_hint_x: 0.1
     option_cls: app.priority_spinner_options
     on_text: app.increment_priority(self)
+
+<TaskLabel>:
+    text_size: self.size
+    padding: 15, 0
+    halign: "left"
+    valign: "center"
 
 BoxLayout:
     orientation: "horizontal"
