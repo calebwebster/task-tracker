@@ -1,3 +1,9 @@
+<PrioritySpinner>:
+    values: ("+1", "-1")
+    size_hint_x: 0.1
+    option_cls: app.priority_spinner_options
+    on_text: app.increment_priority(self)
+
 BoxLayout:
     orientation: "horizontal"
     BoxLayout:
@@ -7,34 +13,29 @@ BoxLayout:
             text: "Sort by:"
         Spinner:
             id: sorting_attribute_selection
-            text: app.current_spinner_selection
+            text_autoupdate: True
             background_color: .6, .2, .4, 1
-            option_cls: app.spinner_options
-            values: app.spinner_selections
-            on_text:
-                app.current_spinner_selection = self.text
-                app.refresh_buttons()
-#        Label:
-#            text: "Add New Task:"
+            option_cls: app.sorting_spinner_options
+            values: ("Priority", "Name", "Subject")
+            on_text: app.refresh_buttons()
         Button:
             text: "Reverse Sorting"
             background_color: .6, .2, .4, 1
             on_press: app.reverse_sorting()
         Label:
-            text: "Name:"
+            text: "Add New Task:"
         TextInput:
+            hint_text: "Name:"
             id: name_input
             multiline: False
             write_tab: False
-        Label:
-            text: "Subject:"
         TextInput:
+            hint_text: "Subject:"
             id: subject_input
             multiline: False
             write_tab: False
-        Label:
-            text: "Priority:"
         TextInput:
+            hint_text: "Priority:"
             id: priority_input
             multiline: False
             write_tab: False
@@ -61,7 +62,7 @@ BoxLayout:
             do_scroll_y: True
             GridLayout:
                 rows: app.number_of_buttons
-                cols: 1
+                cols: 2
                 row_default_height: 50
                 row_force_default: True
                 id: tasks_box

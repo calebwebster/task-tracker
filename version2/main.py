@@ -7,30 +7,44 @@ User can add new tasks, change task sorting, and mark tasks as completed/uncompl
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import StringProperty
-from kivy.properties import ListProperty
-from kivy.properties import NumericProperty
-from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
+from kivy.uix.spinner import Spinner
 from version2.task import Task
 from version2.taskcollection import TaskCollection
 import pygame
 
 pygame.init()
 
-SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject", "Name": "name"}
-STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)
 COMPLETED_SOUND = "trumpet.wav"
 
 
-class SpinnerOption(Button):
+class PrioritySpinner(Spinner, Button):
+    pass
+
+
+# class TaskButton(Label, Button):
+#     pass
+
+
+class SortingSpinnerOption(Button):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.background_color = .6, .2, .4, 1
+        self.size_hint_y = None
+        self.height = "48dp"
+
+
+class PrioritySpinnerOption(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.background_color = 0, .6, .6, 1
+        self.size_hint_y = None
+        self.height = "48dp"
 
 
 class TaskTrackerApp(App):
@@ -38,11 +52,10 @@ class TaskTrackerApp(App):
 
     tasks_to_complete_text = StringProperty()
     info_panel_text = StringProperty()
-    spinner_selections = ListProperty()
-    current_spinner_selection = StringProperty()
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
-    spinner_options = ObjectProperty(SpinnerOption)
+    sorting_spinner_options = ObjectProperty(SortingSpinnerOption)
+    priority_spinner_options = ObjectProperty(PrioritySpinnerOption)
 
     def __init__(self, **kwargs):
         """Initialize TravelTrackerApp class, load tasks into task_collection from tasks.csv."""
@@ -58,8 +71,6 @@ class TaskTrackerApp(App):
         Window.size = (800, 600)
         self.info_panel_text = "Welcome to Task Tracker 1.0"
         # Default starting spinner selection must always be the same, so keys are sorted
-        self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
-        self.current_spinner_selection = self.spinner_selections[STARTING_SPINNER_SELECTION_INDEX]
         self.refresh_buttons()
         return self.root
 
@@ -93,19 +104,27 @@ class TaskTrackerApp(App):
         self.root.ids.tasks_box.clear_widgets()
         self.number_of_buttons = 0
         # Get sorting attribute from current spinner selection
-        sorting_attribute = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.current_spinner_selection]
+        sorting_attribute = self.root.ids.sorting_attribute_selection.text.lower()
         self.task_collection.sort_tasks(key=sorting_attribute, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
-            button = Button(
+            task_button = Button(
                 id="button_{}".format(button_number),
-                text=str(task),
+                text="{}  in  {}".format(task.name, task.subject),
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
-            button.bind(on_release=self.mark_completed_or_uncompleted)
-            button.task = task  # store reference to button's task object
-            self.root.ids.tasks_box.add_widget(button)
-            self.buttons.append(button)
+            priority_spinner = PrioritySpinner(
+                id="button_{}_priority".format(button_number),
+                text=str(task.priority),
+                background_color = COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
+            )
+            task_button.bind(on_release=self.mark_completed_or_uncompleted)
+            # priority_spinner.bind(text=TaskTrackerApp.increment_priority)
+            task_button.task = task  # store reference to button's task object
+            priority_spinner.task = task
+            self.root.ids.tasks_box.add_widget(task_button)
+            self.root.ids.tasks_box.add_widget(priority_spinner)
+            self.buttons.append(task_button)
         self.number_of_buttons = len(self.task_collection.tasks)
         self.tasks_box_height = self.number_of_buttons * 50
 
@@ -153,6 +172,13 @@ class TaskTrackerApp(App):
     def reverse_sorting(self):
         """Reverse the sorting of tasks."""
         self.sorting_is_reversed = not self.sorting_is_reversed
+        self.refresh_buttons()
+
+    def increment_priority(self, instance):
+        """Increment task priority by an amount passed in."""
+        amount = int(instance.text)
+        if amount > 0 or instance.task.priority > 1:
+            instance.task.priority += amount
         self.refresh_buttons()
 
     @staticmethod
