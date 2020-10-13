@@ -59,6 +59,6 @@ class TaskCollection:
         """Return the number of uncompleted tasks in tasks."""
         return len([task for task in self.tasks if not task.is_completed])
 
-    def sort_tasks(self, key="due_date", is_reversed=False):
+    def sort_tasks(self, key1="is_completed", key2="due_date", is_reversed=False):
         """Sort tasks list by passed in key first, then by priority."""
-        self.tasks.sort(key=attrgetter("is_completed", key, "priority"), reverse=is_reversed)
+        self.tasks.sort(key=attrgetter(key1, key2, "priority"), reverse=is_reversed)

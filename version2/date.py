@@ -8,10 +8,11 @@ __lt__ for sorting
 
 
 class Date:
-    """Date object."""
+    """Date object which can either be "None" or a date with self.day, self.month, self.year.
+    Date is passed in as a string."""
 
     def __init__(self, string):
-        """Initialize Date object."""
+        """Initialize Date object, setting day, month and year if string is not "None"."""
         self.string = string
         self.is_none = self.string == "None"
         if not self.is_none:

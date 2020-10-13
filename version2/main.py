@@ -5,9 +5,6 @@ Kivy app that displays a list of tasks in GUI form.
 User can add new tasks, change task sorting, and mark tasks as completed/uncompleted.
 """
 
-# TODO: due date input
-# TODO: don't sort by completed button
-
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
@@ -68,7 +65,6 @@ class TaskTrackerApp(App):
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
     spinner_selections = ListProperty()
-    current_spinner_selection = StringProperty()
     sorting_spinner_options = ObjectProperty(SortingSpinnerOption)
     priority_spinner_options = ObjectProperty(PrioritySpinnerOption)
 
@@ -79,6 +75,7 @@ class TaskTrackerApp(App):
         self.task_collection.load_tasks(TASKS_FILE_NAME)
         self.buttons = []
         self.sorting_is_reversed = False
+        self.grouping_completed_tasks = True
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
@@ -87,7 +84,6 @@ class TaskTrackerApp(App):
         self.info_panel_text = "Welcome to TaskTracker 2.0"
         # Default starting spinner selection must always be the same, so keys are sorted
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
-        self.current_spinner_selection = self.spinner_selections[STARTING_SPINNER_SELECTION_INDEX]
         self.refresh_buttons()
         return self.root
 
@@ -120,9 +116,10 @@ class TaskTrackerApp(App):
         completed or not."""
         self.root.ids.tasks_box.clear_widgets()
         self.number_of_buttons = 0
-        # Get sorting attribute from current spinner selection
-        sorting_attribute = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.current_spinner_selection]
-        self.task_collection.sort_tasks(key=sorting_attribute, is_reversed=self.sorting_is_reversed)
+        # Get sorting attributes
+        attribute2 = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.root.ids.sorting_attribute_selection.text]
+        attribute1 = "is_completed" if self.grouping_completed_tasks else attribute2
+        self.task_collection.sort_tasks(key1=attribute1, key2=attribute2, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
             task_button = BoxLayout(
@@ -130,11 +127,11 @@ class TaskTrackerApp(App):
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             name_label = TaskLabel(text=task.name)
-            subject_label = TaskLabel(text=task.subject,)
+            subject_label = TaskLabel(text=task.subject, size_hint_x=0.8)
             due_date_label = TaskLabel(
                 text=str(task.due_date),
-                size_hint_x=0.7,
-                color=(1, 0, 0, 1) if task.is_due() and not task.is_completed else (1, 1, 1, 1)
+                size_hint_x=0.6,
+                color=(1, 0, 0, 1) if task.is_due() and not task.is_completed else (1, 1, 1, 1),
             )
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
@@ -144,9 +141,11 @@ class TaskTrackerApp(App):
             task_button.bind(on_release=self.mark_completed_or_uncompleted)
             task_button.task = task  # store reference to button's task object
             priority_spinner.task = task
+
             task_button.add_widget(name_label)
             task_button.add_widget(subject_label)
             task_button.add_widget(due_date_label)
+
             self.root.ids.tasks_box.add_widget(task_button)
             self.root.ids.tasks_box.add_widget(priority_spinner)
             self.buttons.append(task_button)
@@ -167,31 +166,29 @@ class TaskTrackerApp(App):
         if name and subject and priority:
             try:
                 priority = int(priority)
+                # Due date entered can be a date (in slash format), "None", or ""
                 if due_date_string != "None" and due_date_string != "":
-                    print("Date entered was not None or blank")
                     temp_date_object = Date(due_date_string)
+                if due_date_string == "":
+                    due_date_string = "None"  # Date class only accepts "None", so change "" to "None"
                 if priority <= 0:
                     self.info_panel_text = "Priority must be > 0"
                 else:
-                    print("Added Task")
                     # task_collection.add_task() returns a confirmation message:
                     confirmation = self.task_collection.add_task(Task(
-                        name, subject,
-                        priority, due_date_string
+                        name, subject, priority, due_date_string
                     ))
                     self.info_panel_text = confirmation
 
                     # Utilize variable arguments to clear text of any amount of widgets
                     self.clear_widget_text(
-                        self.root.ids.name_input,
-                        self.root.ids.subject_input,
-                        self.root.ids.priority_input,
-                        self.root.ids.due_date_input
+                        self.root.ids.name_input, self.root.ids.subject_input,
+                        self.root.ids.priority_input, self.root.ids.due_date_input
                     )
                     self.refresh_buttons()
             except ValueError:
                 if isinstance(priority, int):
-                    self.info_panel_text = "Please enter a valid date (in slash format) or \"None\""
+                    self.info_panel_text = "Please enter a valid date (in slash format) or leave blank"
                 else:
                     self.info_panel_text = "Please enter a valid priority"
         else:
@@ -209,6 +206,12 @@ class TaskTrackerApp(App):
     def reverse_sorting(self):
         """Reverse the sorting of tasks."""
         self.sorting_is_reversed = not self.sorting_is_reversed
+        self.refresh_buttons()
+
+    def group_or_ungroup(self):
+        """Toggle is_completed as the first sorting attribute."""
+        print("Yes")
+        self.grouping_completed_tasks = not self.grouping_completed_tasks
         self.refresh_buttons()
 
     def increment_priority(self, instance):

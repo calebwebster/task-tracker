@@ -22,18 +22,20 @@ BoxLayout:
         Label:
             text: "Sort by:"
         Spinner:
-            text: app.current_spinner_selection
+            text: "Due Date"
             id: sorting_attribute_selection
             background_color: .6, .2, .4, 1
             option_cls: app.sorting_spinner_options
             values: app.spinner_selections
-            on_text:
-                app.current_spinner_selection = self.text
-                app.refresh_buttons()
+            on_text: app.refresh_buttons()
         Button:
             text: "Reverse Sorting"
             background_color: .6, .2, .4, 1
             on_press: app.reverse_sorting()
+        Button:
+            text: "Group / Ungroup"
+            background_color: .6, .2, .4, 1
+            on_press: app.group_or_ungroup()
         Label:
             text: "Add New Task:"
         TextInput:
