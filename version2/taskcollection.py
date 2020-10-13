@@ -3,6 +3,7 @@ Functionality: loading & saving tasks to file, adding tasks to list, returning i
 
 from operator import attrgetter
 from version2.task import Task
+from version2.date import Date
 
 
 class TaskCollection:
@@ -29,6 +30,10 @@ class TaskCollection:
                 parts[4] = parts[4] == "True"
                 self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3], parts[4]))
             except IndexError:
+                print("Index error occurred when adding tasks")
+                continue
+            except ValueError:
+                print("Value error occurred when adding tasks")
                 continue
         file_in.close()
 
@@ -36,8 +41,7 @@ class TaskCollection:
         """Write all tasks to a file."""
         file_out = open(file_name, 'w')
         for task in self.tasks:
-            print("{},{},{},{},{}".format(task.name, task.subject, task.priority,
-                                          task.due_date, task.is_completed), file=file_out)
+            print("{},{},{},{},{}".format(task.name, task.subject, task.priority, task.due_date, task.is_completed), file=file_out)
         file_out.close()
 
     def add_task(self, task=Task()):
@@ -55,6 +59,6 @@ class TaskCollection:
         """Return the number of uncompleted tasks in tasks."""
         return len([task for task in self.tasks if not task.is_completed])
 
-    def sort_tasks(self, key="is_completed", is_reversed=False):
+    def sort_tasks(self, key="due_date", is_reversed=False):
         """Sort tasks list by passed in key first, then by priority."""
         self.tasks.sort(key=attrgetter("is_completed", key, "priority"), reverse=is_reversed)

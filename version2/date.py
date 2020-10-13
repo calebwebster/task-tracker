@@ -10,29 +10,43 @@ __lt__ for sorting
 class Date:
     """Date object."""
 
-    def __init__(self, parts):
+    def __init__(self, string):
         """Initialize Date object."""
-        self.parts = parts
-        if self.parts != "None":
-            self.day = int(parts[0])
-            self.month = int(parts[1])
-            self.year = int(parts[2])
+        self.string = string
+        self.is_none = self.string == "None"
+        if not self.is_none:
+            self.day, self.month, self.year = [int(part) for part in self.string.split("/")]
 
     def __str__(self):
         """Define rules for printing class objects."""
-        if self.parts != "None":
+        if not self.is_none:
             return "{}/{}/{}".format(self.day, self.month, self.year)
         else:
             return "None"
 
     def __lt__(self, other):
         """Return True if date object is less than other, False if it is not."""
-        if self.parts != "None" and other.parts != "None":
-            return self.year < other.year or self.month < other.month or self.day < other.day
-        elif self.parts != "None" and other.parts == "None":
-            return False
-        elif self.parts == "None" and other.parts != "None":
+        if not self.is_none and not other.is_none:
+            if self.year < other.year:
+                return True
+            elif self.year > other.year:
+                return False
+            else:
+                if self.month < other.month:
+                    return True
+                elif self.month > other.month:
+                    return False
+                else:
+                    if self.day < other.day:
+                        return True
+                    else:
+                        return False
+        elif not self.is_none and other.is_none:
             return True
+        elif self.is_none and not other.is_none:
+            return False
+        else:
+            return False
 
     def is_valid_date(self):
         """Return True if date is valid, False if it is not."""
@@ -55,7 +69,7 @@ class Date:
 
     def is_leap_year(self):
         """Return True if year is a leap year, False if it is not."""
-        if self.parts != "None":
+        if not self.is_none:
             return self.year % 4 == 0 and self.year % 100 != 0 or self.year % 400 == 0
         else:
             return False

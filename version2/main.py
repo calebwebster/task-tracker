@@ -18,10 +18,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from version2.task import Task
 from version2.taskcollection import TaskCollection
+from version2.date import Date
 import pygame
 
 pygame.init()
 
+SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject",
+                                    "Name": "name", "Due Date": "due_date"}
+STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)
@@ -63,6 +67,8 @@ class TaskTrackerApp(App):
     info_panel_text = StringProperty()
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
+    spinner_selections = ListProperty()
+    current_spinner_selection = StringProperty()
     sorting_spinner_options = ObjectProperty(SortingSpinnerOption)
     priority_spinner_options = ObjectProperty(PrioritySpinnerOption)
 
@@ -80,6 +86,8 @@ class TaskTrackerApp(App):
         Window.size = (800, 600)
         self.info_panel_text = "Welcome to TaskTracker 2.0"
         # Default starting spinner selection must always be the same, so keys are sorted
+        self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
+        self.current_spinner_selection = self.spinner_selections[STARTING_SPINNER_SELECTION_INDEX]
         self.refresh_buttons()
         return self.root
 
@@ -113,21 +121,20 @@ class TaskTrackerApp(App):
         self.root.ids.tasks_box.clear_widgets()
         self.number_of_buttons = 0
         # Get sorting attribute from current spinner selection
-        sorting_attribute = self.root.ids.sorting_attribute_selection.text.lower()
+        sorting_attribute = SPINNER_SELECTIONS_TO_ATTRIBUTES[self.current_spinner_selection]
         self.task_collection.sort_tasks(key=sorting_attribute, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
             task_button = BoxLayout(
                 id="button_{}".format(button_number),
-                # text="{}  in  {}".format(task.name, task.subject),
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             name_label = TaskLabel(text=task.name)
             subject_label = TaskLabel(text=task.subject,)
             due_date_label = TaskLabel(
-                text=task.due_date,
+                text=str(task.due_date),
                 size_hint_x=0.7,
-                color=(1, 0, 0, 1) if task.is_due() else (1, 1, 1, 1)
+                color=(1, 0, 0, 1) if task.is_due() and not task.is_completed else (1, 1, 1, 1)
             )
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
@@ -155,16 +162,23 @@ class TaskTrackerApp(App):
         name = self.root.ids.name_input.text.title()
         subject = self.root.ids.subject_input.text.title()
         priority = self.root.ids.priority_input.text
-        due_date = self.root.ids.due_date_input.text
+        due_date_string = self.root.ids.due_date_input.text.title()
 
         if name and subject and priority:
             try:
                 priority = int(priority)
+                if due_date_string != "None" and due_date_string != "":
+                    print("Date entered was not None or blank")
+                    temp_date_object = Date(due_date_string)
                 if priority <= 0:
                     self.info_panel_text = "Priority must be > 0"
                 else:
+                    print("Added Task")
                     # task_collection.add_task() returns a confirmation message:
-                    confirmation = self.task_collection.add_task(Task(name, subject, priority, due_date))
+                    confirmation = self.task_collection.add_task(Task(
+                        name, subject,
+                        priority, due_date_string
+                    ))
                     self.info_panel_text = confirmation
 
                     # Utilize variable arguments to clear text of any amount of widgets
@@ -176,7 +190,10 @@ class TaskTrackerApp(App):
                     )
                     self.refresh_buttons()
             except ValueError:
-                self.info_panel_text = "Please enter a valid number"
+                if isinstance(priority, int):
+                    self.info_panel_text = "Please enter a valid date (in slash format) or \"None\""
+                else:
+                    self.info_panel_text = "Please enter a valid priority"
         else:
             self.info_panel_text = "All fields must be completed"
 
