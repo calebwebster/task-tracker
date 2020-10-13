@@ -1,6 +1,9 @@
 <Widget>:
     font_size: 17
 
+<Button>:
+    background_color: .6, .2, .4, 1
+
 <PrioritySpinner>:
     values: ("-1", "+1")
     font_size: 18
@@ -24,17 +27,14 @@ BoxLayout:
         Spinner:
             text: "Due Date"
             id: sorting_attribute_selection
-            background_color: .6, .2, .4, 1
             option_cls: app.sorting_spinner_options
             values: app.spinner_selections
             on_text: app.refresh_buttons()
         Button:
             text: "Reverse Sorting"
-            background_color: .6, .2, .4, 1
             on_press: app.reverse_sorting()
         Button:
             text: "Group / Ungroup"
-            background_color: .6, .2, .4, 1
             on_press: app.group_or_ungroup()
         Label:
             text: "Add New Task:"
@@ -60,15 +60,12 @@ BoxLayout:
             write_tab: False
         Button:
             text: "Add Task"
-            background_color: .6, .2, .4, 1
             on_press: app.add_task()
         Button:
             text: "Clear"
-            background_color: .6, .2, .4, 1
             on_press: app.clear_widget_text(name_input, subject_input, priority_input, due_date_input, info_panel)
         Button:
             text: "Remove Completed"
-            background_color: .6, .2, .4, 1
             on_press: app.remove_completed_tasks()
     BoxLayout:
         orientation: "vertical"

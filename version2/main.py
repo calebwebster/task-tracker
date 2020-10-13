@@ -24,8 +24,12 @@ SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject"
                                     "Name": "name", "Due Date": "due_date"}
 STARTING_SPINNER_SELECTION_INDEX = 0
 TASKS_FILE_NAME = "tasks.csv"
-COMPLETED_COLOR = (.4, .4, .4, 1)
-UNCOMPLETED_COLOR = (.2, .4, .6, 1)
+COMPLETED_COLOR = (.4, .4, .4, 1)  # 102,102,102
+UNCOMPLETED_COLOR = (.2, .4, .6, 1)  # 51,102,153
+RED = (1, 0, 0, 1)  # 255,0,0
+WHITE = (1, 1, 1, 1)  # 255,255,255
+MARONE = (.6, .2, .4, 1)  # 153,51,102
+TEAL = (0, .6, .6, 1)  # 0,153,153
 COMPLETED_SOUND = "trumpet.wav"
 
 
@@ -44,7 +48,7 @@ class BoxLayout(BoxLayout, Button):
 class SortingSpinnerOption(Button):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.background_color = .6, .2, .4, 1
+        self.background_color = MARONE
         self.size_hint_y = None
         self.height = "48dp"
 
@@ -52,7 +56,7 @@ class SortingSpinnerOption(Button):
 class PrioritySpinnerOption(Button):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.background_color = 0, .6, .6, 1
+        self.background_color = TEAL
         self.size_hint_y = None
         self.height = "48dp"
 
@@ -73,17 +77,18 @@ class TaskTrackerApp(App):
         super().__init__(**kwargs)
         self.task_collection = TaskCollection()
         self.task_collection.load_tasks(TASKS_FILE_NAME)
+        self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
         self.buttons = []
         self.sorting_is_reversed = False
         self.grouping_completed_tasks = True
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
+        self.title = "TaskTracker 2.0"
+        self.icon = "icon.png"
+        Window.size = (900, 600)
         self.root = Builder.load_file("app.kv")
-        Window.size = (800, 600)
         self.info_panel_text = "Welcome to TaskTracker 2.0"
-        # Default starting spinner selection must always be the same, so keys are sorted
-        self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
         self.refresh_buttons()
         return self.root
 
@@ -125,21 +130,22 @@ class TaskTrackerApp(App):
             task_button = BoxLayout(
                 id="button_{}".format(button_number),
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
+                on_release=self.mark_completed_or_uncompleted
             )
             name_label = TaskLabel(text=task.name)
             subject_label = TaskLabel(text=task.subject, size_hint_x=0.8)
             due_date_label = TaskLabel(
                 text=str(task.due_date),
                 size_hint_x=0.6,
-                color=(1, 0, 0, 1) if task.is_due() and not task.is_completed else (1, 1, 1, 1),
+                color=RED if task.is_due() and not task.is_completed else WHITE,
             )
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
                 text=str(task.priority),
                 background_color = COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
-            task_button.bind(on_release=self.mark_completed_or_uncompleted)
-            task_button.task = task  # store reference to button's task object
+            # store reference to button's task object
+            task_button.task = task
             priority_spinner.task = task
 
             task_button.add_widget(name_label)
@@ -210,7 +216,6 @@ class TaskTrackerApp(App):
 
     def group_or_ungroup(self):
         """Toggle is_completed as the first sorting attribute."""
-        print("Yes")
         self.grouping_completed_tasks = not self.grouping_completed_tasks
         self.refresh_buttons()
 

@@ -3,7 +3,6 @@ Functionality: loading & saving tasks to file, adding tasks to list, returning i
 
 from operator import attrgetter
 from version2.task import Task
-from version2.date import Date
 
 
 class TaskCollection:
