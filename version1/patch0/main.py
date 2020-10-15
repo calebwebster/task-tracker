@@ -1,5 +1,5 @@
 """
-Task Tracker
+Task Tracker version 1.0
 8/10/2020
 Kivy app that displays a list of tasks in GUI form.
 User can add new tasks, change task sorting, and mark tasks as completed/uncompleted.

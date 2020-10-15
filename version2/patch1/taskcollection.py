@@ -2,7 +2,7 @@
 Functionality: loading & saving tasks to file, adding tasks to list, returning info, sorting."""
 
 from operator import attrgetter
-from version2.patch0.task import Task
+from version2.patch1.task import Task
 
 
 class TaskCollection:
