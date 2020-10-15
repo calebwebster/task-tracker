@@ -2,7 +2,7 @@
 
 TaskTracker version 2.0 is here, and with it some pretty noice changes and extra features to help you manage your tasks better!
 
-_For those out of the loop, __TaskTracker__ is a python kivy app that keeps track of your tasks and helps you organize and complete them. [Check it out!](https://github.com/CalebWebsterJCU/TaskTracker/version2/patch0)_
+_For those out of the loop, __TaskTracker__ is a python kivy app that keeps track of your tasks and helps you organize and complete them. [Check it out!](https://github.com/CalebWebsterJCU/TaskTracker/tree/master/version2/patch0)_
 
 Lets dive in:
 
