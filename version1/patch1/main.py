@@ -13,8 +13,8 @@ from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
-from version1.task import Task
-from version1.taskcollection import TaskCollection
+from version1.patch1.task import Task
+from version1.patch1.taskcollection import TaskCollection
 
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Completed": "is_completed",
                                     "Priority": "priority",
@@ -54,7 +54,7 @@ class TaskTrackerApp(App):
         """Construct the GUI, setting string and list properties to starting values."""
         self.root = Builder.load_file("app.kv")
         Window.size = (800, 600)
-        self.info_panel_text = "Welcome to Task Tracker 1.0"
+        self.info_panel_text = "Welcome to Task Tracker patch1"
         self.tasks_to_complete_text = "Tasks to complete: {}".format(self.task_collection.get_num_of_uncompleted_tasks())
         # Default starting spinner selection must always be the same, so keys are sorted
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())

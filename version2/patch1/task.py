@@ -1,7 +1,7 @@
 """Task - This class represents a task with a name, subject, priority, and a boolean
 for whether or not the task has been competed."""
 
-from version2.date import Date
+from version2.patch1.date import Date
 from datetime import datetime
 
 

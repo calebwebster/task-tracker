@@ -7,15 +7,15 @@ User can add new tasks, change task sorting, and mark tasks as completed/uncompl
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from version2.task import Task
-from version2.taskcollection import TaskCollection
-from version2.date import Date
+from version2.patch1.task import Task
+from version2.patch1.taskcollection import TaskCollection
+from version2.patch1.date import Date
 import pygame
 
 pygame.init()
