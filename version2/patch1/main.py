@@ -79,6 +79,7 @@ class TaskTrackerApp(App):
         self.task_collection.load_tasks(TASKS_FILE_NAME)
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
         self.buttons = []
+        self.priority_spinners = []
         self.sorting_is_reversed = False
         self.grouping_completed_tasks = True
 
@@ -155,6 +156,7 @@ class TaskTrackerApp(App):
             self.root.ids.tasks_box.add_widget(task_button)
             self.root.ids.tasks_box.add_widget(priority_spinner)
             self.buttons.append(task_button)
+            self.priority_spinners.append(priority_spinner)
         self.number_of_buttons = len(self.task_collection.tasks)
         self.tasks_box_height = self.number_of_buttons * 50
 
@@ -172,11 +174,11 @@ class TaskTrackerApp(App):
         if name and subject and priority:
             try:
                 priority = int(priority)
-                # Due date entered can be a date (in slash format), "None", or ""
-                if due_date_string != "None" and due_date_string != "":
+                # Due date entered can be a date (dd/mm/yyyy), "None", or ""
+                if due_date_string != "":
                     temp_date_object = Date(due_date_string)
-                if due_date_string == "":
-                    due_date_string = "None"  # Date class only accepts "None", so change "" to "None"
+                else:
+                    due_date_string = "None"
                 if priority <= 0:
                     self.info_panel_text = "Priority must be > 0"
                 else:
@@ -194,7 +196,7 @@ class TaskTrackerApp(App):
                     self.refresh_buttons()
             except ValueError:
                 if isinstance(priority, int):
-                    self.info_panel_text = "Please enter a valid date (in slash format) or leave blank"
+                    self.info_panel_text = "Please enter a valid date (dd/mm/yyyy) or leave blank"
                 else:
                     self.info_panel_text = "Please enter a valid priority"
         else:
@@ -208,6 +210,7 @@ class TaskTrackerApp(App):
             if button.task.is_completed:
                 self.task_collection.remove_task(button.task)
                 self.root.ids.tasks_box.remove_widget(button)
+                self.root.ids.tasks_box.remove_widget(self.priority_spinners[self.buttons.index(button)])
 
     def reverse_sorting(self):
         """Reverse the sorting of tasks."""
