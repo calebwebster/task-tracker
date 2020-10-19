@@ -20,17 +20,16 @@ import pygame
 
 pygame.init()
 
+SETTINGS_FILE = "settings.txt"
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject",
                                     "Name": "name", "Due Date": "due_date"}
 STARTING_SPINNER_SELECTION_INDEX = 0
-TASKS_FILE_NAME = "tasks.csv"
 COMPLETED_COLOR = (.4, .4, .4, 1)  # 102,102,102
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)  # 51,102,153
 RED = (1, 0, 0, 1)  # 255,0,0
 WHITE = (1, 1, 1, 1)  # 255,255,255
 MARONE = (.6, .2, .4, 1)  # 153,51,102
 TEAL = (0, .6, .6, 1)  # 0,153,153
-COMPLETED_SOUND = "trumpet.wav"
 
 
 class PrioritySpinner(Spinner, Button):
@@ -41,7 +40,7 @@ class TaskLabel(Label):
     pass
 
 
-class BoxLayout(BoxLayout, Button):
+class ButtonBoxLayout(BoxLayout, Button):
     pass
 
 
@@ -75,8 +74,14 @@ class TaskTrackerApp(App):
     def __init__(self, **kwargs):
         """Initialize TravelTrackerApp class, load tasks into task_collection from tasks.csv."""
         super().__init__(**kwargs)
+        # Default loaded settings
+        self.tasks_file_name = ""
+        self.completed_sound = ""
+        # Load settings
+        self.load_settings()
+        # Static settings
         self.task_collection = TaskCollection()
-        self.task_collection.load_tasks(TASKS_FILE_NAME)
+        self.task_collection.load_tasks(self.tasks_file_name)
         self.spinner_selections = sorted(SPINNER_SELECTIONS_TO_ATTRIBUTES.keys())
         self.buttons = []
         self.priority_spinners = []
@@ -95,7 +100,7 @@ class TaskTrackerApp(App):
 
     def on_stop(self):
         """Save tasks to tasks.csv when program ends."""
-        self.task_collection.save_tasks(TASKS_FILE_NAME)
+        self.task_collection.save_tasks(self.tasks_file_name)
 
     def mark_completed_or_uncompleted(self, instance):
         """If task is completed, mark it as uncompleted. If task is uncompleted, mark it as
@@ -109,7 +114,7 @@ class TaskTrackerApp(App):
             message += " Get to work!" if task.is_important() else ""
         else:
             task.mark_as_completed()
-            self.play_sound(COMPLETED_SOUND)
+            self.play_sound(self.completed_sound)
             message = "You completed {}.".format(task.name)
             message += " Great work!" if task.is_important() else ""
 
@@ -128,7 +133,7 @@ class TaskTrackerApp(App):
         self.task_collection.sort_tasks(key1=attribute1, key2=attribute2, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
-            task_button = BoxLayout(
+            task_button = ButtonBoxLayout(
                 id="button_{}".format(button_number),
                 background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
                 on_release=self.mark_completed_or_uncompleted
@@ -143,7 +148,7 @@ class TaskTrackerApp(App):
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
                 text=str(task.priority),
-                background_color = COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
+                background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
             )
             # store reference to button's task object
             task_button.task = task
@@ -176,7 +181,7 @@ class TaskTrackerApp(App):
                 priority = int(priority)
                 # Due date entered can be a date (dd/mm/yyyy), "None", or ""
                 if due_date_string != "":
-                    temp_date_object = Date(due_date_string)
+                    Date(due_date_string)
                 else:
                     due_date_string = "None"
                 if priority <= 0:
@@ -239,6 +244,12 @@ class TaskTrackerApp(App):
     def play_sound(sound):
         """Play the sound of the file passed in using playsound module."""
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(sound))
+
+    def load_settings(self):
+        """Read settings file and change app settings accordingly."""
+        with open(SETTINGS_FILE, 'r') as file_in:
+            self.tasks_file_name = file_in.readline().strip()
+            self.completed_sound = file_in.readline().strip()
 
 
 if __name__ == '__main__':
