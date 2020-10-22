@@ -21,7 +21,7 @@ class Date:
     def __str__(self):
         """Define rules for printing class objects."""
         if not self.is_none:
-            return "{}/{}/{}".format(self.day, self.month, self.year)
+            return "{:02}/{:02}/{:04}".format(self.day, self.month, self.year)
         else:
             return "None"
 
