@@ -52,6 +52,8 @@ class TaskTrackerApp(App):
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
+        self.title = "TaskTracker 1.0"
+        self.icon = "icon.png"
         self.root = Builder.load_file("app.kv")
         Window.size = (800, 600)
         self.info_panel_text = "Welcome to Task Tracker 1.0"
