@@ -33,7 +33,7 @@ class Task:
 
     def is_important(self):
         """Return True if task is important, False if it is not."""
-        return self.priority <= 2
+        return self.priority <= 3
 
     def is_due(self):
         """Return True if task is due today or overdue, False if it is not."""

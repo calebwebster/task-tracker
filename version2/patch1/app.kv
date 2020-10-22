@@ -17,6 +17,22 @@
     halign: "left"
     valign: "center"
 
+<HelpPopup>:
+    title_size: 17
+    separator_color: .6, .2, .4, 1
+    separator_height: "4dp"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: app.help_content
+            text_size: self.size
+            valign: "top"
+            padding: (5, 5)
+        Button:
+            text: "Close"
+            size_hint_y: 0.15
+            on_release: root.dismiss()
+
 BoxLayout:
     orientation: "horizontal"
     BoxLayout:
@@ -67,6 +83,9 @@ BoxLayout:
         Button:
             text: "Remove Completed"
             on_press: app.remove_completed_tasks()
+        Button:
+            text: "Help"
+            on_press: app.show_help_popup()
     BoxLayout:
         orientation: "vertical"
         Label:

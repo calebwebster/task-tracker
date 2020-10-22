@@ -13,6 +13,7 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from version2.patch1.task import Task
 from version2.patch1.taskcollection import TaskCollection
 from version2.patch1.date import Date
@@ -21,11 +22,13 @@ import pygame
 pygame.init()
 
 SETTINGS_FILE = "settings.txt"
+HELP_FILE = "help.txt"
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject",
                                     "Name": "name", "Due Date": "due_date"}
 STARTING_SPINNER_SELECTION_INDEX = 0
 COMPLETED_COLOR = (.4, .4, .4, 1)  # 102,102,102
 UNCOMPLETED_COLOR = (.2, .4, .6, 1)  # 51,102,153
+IMPORTANT_COLOR = (0, .6, .9, 1)
 RED = (1, 0, 0, 1)  # 255,0,0
 WHITE = (1, 1, 1, 1)  # 255,255,255
 MARONE = (.6, .2, .4, 1)  # 153,51,102
@@ -41,6 +44,10 @@ class TaskLabel(Label):
 
 
 class ButtonBoxLayout(BoxLayout, Button):
+    pass
+
+
+class HelpPopup(Popup):
     pass
 
 
@@ -65,6 +72,7 @@ class TaskTrackerApp(App):
 
     tasks_to_complete_text = StringProperty()
     info_panel_text = StringProperty()
+    help_content = StringProperty()
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
     spinner_selections = ListProperty()
@@ -77,8 +85,11 @@ class TaskTrackerApp(App):
         # Default loaded settings
         self.tasks_file_name = ""
         self.completed_sound = ""
+        self.help_content = ""
         # Load settings
         self.load_settings()
+        # Load help content
+        self.load_help_content()
         # Static settings
         self.task_collection = TaskCollection()
         self.task_collection.load_tasks(self.tasks_file_name)
@@ -92,7 +103,7 @@ class TaskTrackerApp(App):
         """Construct the GUI, setting string and list properties to starting values."""
         self.title = "TaskTracker 2.0"
         self.icon = "icon.png"
-        Window.size = (900, 600)
+        Window.size = (900, 700)
         self.root = Builder.load_file("app.kv")
         self.info_panel_text = "Welcome to TaskTracker 2.0"
         self.refresh_buttons()
@@ -153,7 +164,7 @@ class TaskTrackerApp(App):
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
                 text=str(task.priority),
-                background_color=background_color,
+                background_color=background_color if not task.is_important() else IMPORTANT_COLOR,
             )
             # store reference to button's task object
             task_button.task = task
@@ -240,6 +251,12 @@ class TaskTrackerApp(App):
         self.refresh_buttons()
 
     @staticmethod
+    def show_help_popup():
+        """Display the help popup."""
+        help_popup = HelpPopup(id="help_popup", title="Help", size_hint=(None, None), size=(500, 500))
+        help_popup.open()
+
+    @staticmethod
     def clear_widget_text(*widgets):
         """Clear the text of any number of any number of widgets passed in."""
         for widget in widgets:
@@ -255,6 +272,11 @@ class TaskTrackerApp(App):
         with open(SETTINGS_FILE, 'r') as file_in:
             self.tasks_file_name = file_in.readline().strip()
             self.completed_sound = file_in.readline().strip()
+
+    def load_help_content(self):
+        """Read help documentation from file."""
+        with open(HELP_FILE, 'r') as help_file:
+            self.help_content = help_file.read()
 
 
 if __name__ == '__main__':
