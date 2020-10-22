@@ -133,9 +133,14 @@ class TaskTrackerApp(App):
         self.task_collection.sort_tasks(key1=attribute1, key2=attribute2, is_reversed=self.sorting_is_reversed)
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
+            if task.is_completed:
+                background_color = COMPLETED_COLOR
+            else:
+                background_color = UNCOMPLETED_COLOR
+
             task_button = ButtonBoxLayout(
                 id="button_{}".format(button_number),
-                background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
+                background_color=background_color,
                 on_release=self.mark_completed_or_uncompleted
             )
             name_label = TaskLabel(text=task.name)
@@ -148,7 +153,7 @@ class TaskTrackerApp(App):
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
                 text=str(task.priority),
-                background_color=COMPLETED_COLOR if task.is_completed else UNCOMPLETED_COLOR,
+                background_color=background_color,
             )
             # store reference to button's task object
             task_button.task = task
