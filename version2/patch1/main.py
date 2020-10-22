@@ -1,6 +1,6 @@
 """
 Task Tracker version 2.1
-15/10/2020
+22/10/2020
 Kivy app that displays a list of tasks in GUI form.
 User can add new tasks, change task sorting, and mark tasks as completed/uncompleted.
 """
@@ -75,6 +75,7 @@ class TaskTrackerApp(App):
     help_content = StringProperty()
     number_of_buttons = NumericProperty()
     tasks_box_height = NumericProperty()
+    help_label_height = NumericProperty()
     spinner_selections = ListProperty()
     sorting_spinner_options = ObjectProperty(SortingSpinnerOption)
     priority_spinner_options = ObjectProperty(PrioritySpinnerOption)
@@ -86,6 +87,7 @@ class TaskTrackerApp(App):
         self.tasks_file_name = ""
         self.completed_sound = ""
         self.help_content = ""
+        self.help_label_height = 0
         # Load settings
         self.load_settings()
         # Load help content
@@ -101,11 +103,11 @@ class TaskTrackerApp(App):
 
     def build(self):
         """Construct the GUI, setting string and list properties to starting values."""
-        self.title = "TaskTracker 2.0"
+        self.title = "TaskTracker 2.1"
         self.icon = "icon.png"
-        Window.size = (900, 700)
+        Window.size = (900, 660)
         self.root = Builder.load_file("app.kv")
-        self.info_panel_text = "Welcome to TaskTracker 2.0"
+        self.info_panel_text = "Welcome to TaskTracker 2.1"
         self.refresh_buttons()
         return self.root
 
@@ -253,7 +255,7 @@ class TaskTrackerApp(App):
     @staticmethod
     def show_help_popup():
         """Display the help popup."""
-        help_popup = HelpPopup(id="help_popup", title="Help", size_hint=(None, None), size=(500, 500))
+        help_popup = HelpPopup(id="help_popup", title="Help", size_hint=(None, None), size=(600, 600))
         help_popup.open()
 
     @staticmethod
@@ -276,7 +278,9 @@ class TaskTrackerApp(App):
     def load_help_content(self):
         """Read help documentation from file."""
         with open(HELP_FILE, 'r') as help_file:
-            self.help_content = help_file.read()
+            for line in help_file:
+                self.help_label_height += 19
+                self.help_content += line
 
 
 if __name__ == '__main__':

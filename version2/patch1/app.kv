@@ -23,11 +23,17 @@
     separator_height: "4dp"
     BoxLayout:
         orientation: "vertical"
-        Label:
-            text: app.help_content
-            text_size: self.size
-            valign: "top"
-            padding: (5, 5)
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            Label:
+                size_hint_y: None
+                height: self.texture_size[1]
+                text: app.help_content
+                font_size: 16
+                text_size: self.width, app.help_label_height
+                valign: "top"
+                padding: (5, 5)
         Button:
             text: "Close"
             size_hint_y: 0.15
