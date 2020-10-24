@@ -18,7 +18,7 @@ class Task:
 
     def __str__(self):
         """Define rules for printing class objects."""
-        return "{} in {}, priority {}{}{}".format(
+        return "{} in {} (priority {}){}{}".format(
             self.name, self.subject, self.priority,
             ", due {}".format(self.due_date) if self.due_date.is_valid_date() else "",
             " (completed)" if self.is_completed else "")

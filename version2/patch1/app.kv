@@ -1,13 +1,24 @@
 <Widget>:
     font_size: 17
+    color: app.text_color
 
 <Button>:
-    background_color: .6, .2, .4, 1
+    background_color: app.button_color
+
+<SortingSpinnerOption>:
+    background_color: app.button_color
+    size_hint_y: None
+    height: "48dp"
+
+<PrioritySpinnerOption>:
+    background_color: app.priority_color
+    size_hint_y: None
+    height: "48dp"
 
 <PrioritySpinner>:
-    values: ("-1", "+1")
-    font_size: 18
-    size_hint_x: 0.1
+    values: ("Up", "Down")
+    font_size: 20
+    size_hint_x: 0.145
     option_cls: app.priority_spinner_options
     on_text: app.increment_priority(self)
 
@@ -19,7 +30,7 @@
 
 <HelpPopup>:
     title_size: 17
-    separator_color: .6, .2, .4, 1
+    separator_color: app.button_color
     separator_height: "4dp"
     BoxLayout:
         orientation: "vertical"
@@ -36,7 +47,7 @@
                 padding: (5, 5)
         Button:
             text: "Close"
-            size_hint_y: 0.15
+            size_hint_y: 0.1
             on_release: root.dismiss()
 
 BoxLayout:
@@ -98,6 +109,28 @@ BoxLayout:
             id: tasks_to_complete
             size_hint_y: 0.1
             text: app.tasks_to_complete_text
+        ButtonBoxLayout:
+            size_hint_y: 0.065
+            background_color: app.button_color
+            TaskLabel:
+                text: "Name"
+                halign:"left"
+                size_hint_x: 1.32
+            TaskLabel:
+                text: "Subject"
+                size_hint_x: 1.05
+                halign: "left"
+            TaskLabel:
+                text: "Due Date"
+                size_hint_x: 0.8
+                halign: "left"
+            TaskLabel:
+                text: "Priority"
+                size_hint_x: 0.45
+                halign: "left"
+        Button:
+            size_hint_y: 0.035
+            background_color: app.uncompleted_color
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True

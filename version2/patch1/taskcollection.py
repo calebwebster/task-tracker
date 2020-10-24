@@ -21,32 +21,27 @@ class TaskCollection:
 
     def load_tasks(self, file_name):
         """Read tasks from a file and add to tasks list."""
-        file_in = open(file_name, 'r')
-        for line in file_in:
-            try:
-                parts = line.strip().split(",")
-                parts[2] = int(parts[2])
-                parts[4] = parts[4] == "True"
-                self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3], parts[4]))
-            except IndexError:
-                print("Index error occurred when adding tasks")
-                continue
-            except ValueError:
-                print("Value error occurred when adding tasks")
-                continue
-        file_in.close()
+        with open(file_name, 'r') as file_in:
+            for line in file_in:
+                try:
+                    parts = line.strip().split(",")
+                    parts[2] = int(parts[2])
+                    parts[4] = parts[4] == "True"
+                    self.tasks.append(Task(parts[0], parts[1], parts[2], parts[3], parts[4]))
+                except IndexError:
+                    continue
+                except ValueError:
+                    continue
 
     def save_tasks(self, file_name):
         """Write all tasks to a file."""
-        file_out = open(file_name, 'w')
-        for task in self.tasks:
-            print("{},{},{},{},{}".format(task.name, task.subject, task.priority, task.due_date, task.is_completed), file=file_out)
-        file_out.close()
+        with open(file_name, 'w') as file_out:
+            for task in self.tasks:
+                print("{},{},{},{},{}".format(task.name, task.subject, task.priority, task.due_date, task.is_completed), file=file_out)
 
     def add_task(self, task=Task()):
         """Add Task object to tasks list and return a string confirming that task was added."""
         self.tasks.append(task)
-        return str(task) + " added."
 
     def remove_task(self, task=Task()):
         """Remove Task object from tasks list and return the task that was removed."""

@@ -1,25 +1,52 @@
-TaskTracker Features:
-Sort By - Change task sorting
-Reverse Sorting - reverse task sorting order
-Group/Ungroup - toggle grouping of completed & uncompleted tasks
-Add new task - all fields must be completed except Due Date, which can be left
+TaskTracker Functions:
+
+Sort By  -  Change task sorting
+
+Reverse Sorting  -  reverse task sorting order
+
+Group/Ungroup  -  toggle grouping of completed & uncompleted tasks
+
+Input Fields  -  all fields must be completed except Due Date, which can be left
 blank if task has no due date. Priority must be an integer
-Add task - Adds the inputted values to list and writes to tasks file
-Clear - clear input fields and lower status bar
-Remove Completed - removes completed tasks from program and tasks file
-Help - displays help popup
+
+Add Task  -  adds the inputted values to tasks list and writes to tasks file
+
+Clear  -  clears input fields and lower status bar
+
+Remove Completed  -  removes completed tasks from program and tasks file
+
+Help  -  displays help popup
+
 
 Other Features:
-- Tasks with a priority of 3 or below are considered important. These tasks will
-be displayed with different coloured priority fields and a different message will
+
+By default, tasks are sorted by priority and completed/uncompleted tasks are
+grouped together.
+
+Tasks that are due today or overdue will have their due date marked in red.
+
+Click on the priority button to the right of a task to change it's priority
+
+Settings for tasks file and sound file are stored in settings.txt in program
+folder. Change these values to add your own custom file path & sound.
+
+You can also change the program colour scheme by editing the RGBA values in
+settings.txt.
+
+Tasks with a priority of 3 or below are considered important. These tasks will
+be displayed with lighter coloured priority fields and a different message will
 be displayed when you complete/uncomplete them.
-- Tasks that are due today or overdue will have their due date marked in red.
-- Click on the priority button to the right of a task to change it's priority
-- Settings for tasks file and sound file are stored in settings.txt in program folder.
-Change these values to add your own custom file path & sound.
+
 
 Potential Issues:
-- If you installed TaskTracker in Program Files folder or some other restricted
+
+If you installed TaskTracker in Program Files folder or some other restricted
 folder, you will need to run the program as administrator or it will not be able to
 save tasks to the task file. Either change your task file location or program
 folder location, or configure your shortcut to run the program as administrator.
+
+Custom sound files must be .wav files and of a fairly small size.
+
+Unreachable tasks and sound files will cause the program to crash.
+
+Invalid RGBA colour values will also cause the program to crash.

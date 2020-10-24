@@ -26,13 +26,6 @@ HELP_FILE = "help.txt"
 SPINNER_SELECTIONS_TO_ATTRIBUTES = {"Priority": "priority", "Subject": "subject",
                                     "Name": "name", "Due Date": "due_date"}
 STARTING_SPINNER_SELECTION_INDEX = 0
-COMPLETED_COLOR = (.4, .4, .4, 1)  # 102,102,102
-UNCOMPLETED_COLOR = (.2, .4, .6, 1)  # 51,102,153
-IMPORTANT_COLOR = (0, .6, .9, 1)
-RED = (1, 0, 0, 1)  # 255,0,0
-WHITE = (1, 1, 1, 1)  # 255,255,255
-MARONE = (.6, .2, .4, 1)  # 153,51,102
-TEAL = (0, .6, .6, 1)  # 0,153,153
 
 
 class PrioritySpinner(Spinner, Button):
@@ -52,23 +45,23 @@ class HelpPopup(Popup):
 
 
 class SortingSpinnerOption(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_color = MARONE
-        self.size_hint_y = None
-        self.height = "48dp"
+    pass
 
 
 class PrioritySpinnerOption(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_color = TEAL
-        self.size_hint_y = None
-        self.height = "48dp"
+    pass
 
 
 class TaskTrackerApp(App):
     """App that interacts with GUI and utilises Task and TaskCollection classes."""
+
+    completed_color = ()
+    uncompleted_color = ()
+    important_color = ()
+    text_color = ()
+    overdue_color = ()
+    button_color = ()
+    priority_color = ()
 
     tasks_to_complete_text = StringProperty()
     info_panel_text = StringProperty()
@@ -105,9 +98,9 @@ class TaskTrackerApp(App):
         """Construct the GUI, setting string and list properties to starting values."""
         self.title = "TaskTracker 2.1"
         self.icon = "icon.png"
-        Window.size = (900, 660)
+        Window.size = (900, 650)
         self.root = Builder.load_file("app.kv")
-        self.info_panel_text = "Welcome to TaskTracker 2.1"
+        self.info_panel_text = "Welcome to TaskTracker 2.1!"
         self.refresh_buttons()
         return self.root
 
@@ -147,9 +140,9 @@ class TaskTrackerApp(App):
 
         for button_number, task in enumerate(self.task_collection.tasks, 1):
             if task.is_completed:
-                background_color = COMPLETED_COLOR
+                background_color = self.completed_color
             else:
-                background_color = UNCOMPLETED_COLOR
+                background_color = self.uncompleted_color
 
             task_button = ButtonBoxLayout(
                 id="button_{}".format(button_number),
@@ -161,12 +154,12 @@ class TaskTrackerApp(App):
             due_date_label = TaskLabel(
                 text=str(task.due_date),
                 size_hint_x=0.6,
-                color=RED if task.is_due() and not task.is_completed else WHITE,
+                color=self.overdue_color if task.is_due() and not task.is_completed else self.text_color,
             )
             priority_spinner = PrioritySpinner(
                 id="button_{}_priority".format(button_number),
                 text=str(task.priority),
-                background_color=background_color if not task.is_important() else IMPORTANT_COLOR,
+                background_color=background_color if not task.is_important() or task.is_completed else self.important_color,
             )
             # store reference to button's task object
             task_button.task = task
@@ -189,11 +182,11 @@ class TaskTrackerApp(App):
     def add_task(self):
         """Get task name, subject, and priority, and if they are valid,
         add Task to task_collection and refresh buttons."""
-        name = self.root.ids.name_input.text.title()
-        subject = self.root.ids.subject_input.text.title()
-        priority = self.root.ids.priority_input.text
-        due_date_string = self.root.ids.due_date_input.text.title()
-
+        input_fields = [self.root.ids.name_input, self.root.ids.subject_input, self.root.ids.priority_input, self.root.ids.due_date_input]
+        name = input_fields[0].text
+        subject = input_fields[1].text
+        priority = input_fields[2].text
+        due_date_string = input_fields[3].text.title()
         if name and subject and priority:
             try:
                 priority = int(priority)
@@ -206,16 +199,11 @@ class TaskTrackerApp(App):
                     self.info_panel_text = "Priority must be > 0"
                 else:
                     # task_collection.add_task() returns a confirmation message:
-                    confirmation = self.task_collection.add_task(Task(
-                        name, subject, priority, due_date_string
-                    ))
-                    self.info_panel_text = confirmation
-
+                    task = Task(name, subject, priority, due_date_string)
+                    self.task_collection.add_task(task)
+                    self.info_panel_text = "{} added".format(task)
                     # Utilize variable arguments to clear text of any amount of widgets
-                    self.clear_widget_text(
-                        self.root.ids.name_input, self.root.ids.subject_input,
-                        self.root.ids.priority_input, self.root.ids.due_date_input
-                    )
+                    self.clear_widget_text(input_fields[0], input_fields[1], input_fields[2], input_fields[3])
                     self.refresh_buttons()
             except ValueError:
                 if isinstance(priority, int):
@@ -228,7 +216,9 @@ class TaskTrackerApp(App):
     def remove_completed_tasks(self):
         """Remove completed task buttons."""
         if self.task_collection.get_num_of_uncompleted_tasks() < len(self.task_collection.tasks):
-            self.info_panel_text = "All completed tasks removed."
+            self.info_panel_text = "Completed tasks removed"
+        else:
+            self.info_panel_text = "No completed tasks"
         for button in self.buttons:
             if button.task.is_completed:
                 self.task_collection.remove_task(button.task)
@@ -238,16 +228,21 @@ class TaskTrackerApp(App):
     def reverse_sorting(self):
         """Reverse the sorting of tasks."""
         self.sorting_is_reversed = not self.sorting_is_reversed
+        self.info_panel_text = "Sorting reversed"
         self.refresh_buttons()
 
     def group_or_ungroup(self):
         """Toggle is_completed as the first sorting attribute."""
         self.grouping_completed_tasks = not self.grouping_completed_tasks
+        if self.grouping_completed_tasks:
+            self.info_panel_text = "Grouping on"
+        else:
+            self.info_panel_text = "Grouping off"
         self.refresh_buttons()
 
     def increment_priority(self, instance):
         """Increment task priority by an amount passed in."""
-        amount = int(instance.text)
+        amount = -1 if instance.text == "Up" else 1
         if amount > 0 or instance.task.priority > 1:
             instance.task.priority += amount
         self.refresh_buttons()
@@ -272,14 +267,27 @@ class TaskTrackerApp(App):
     def load_settings(self):
         """Read settings file and change app settings accordingly."""
         with open(SETTINGS_FILE, 'r') as file_in:
+            file_in.readline()
+            file_in.readline()
+            file_in.readline()
             self.tasks_file_name = file_in.readline().strip()
+            file_in.readline()
+            file_in.readline()
             self.completed_sound = file_in.readline().strip()
+            colors = []
+            for line in file_in:
+                line = line.strip()
+                if not line:
+                    continue
+                elif line[0].isnumeric():  # check if line contains RGBA values
+                    colors.append([round(int(value) / 255, 2) for value in line.strip().split(",")])
+            self.completed_color, self.uncompleted_color, self.important_color, self.text_color, self.overdue_color, self.button_color, self.priority_color = colors
 
     def load_help_content(self):
         """Read help documentation from file."""
         with open(HELP_FILE, 'r') as help_file:
             for line in help_file:
-                self.help_label_height += 19
+                self.help_label_height += 20
                 self.help_content += line
 
 
