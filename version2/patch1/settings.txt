@@ -6,25 +6,25 @@ tasks.csv
 Sound file location:
 trumpet.wav
 
-RGBA Colour Values
+RGB Colour Values
 
-Completed task colour (default 102,102,102,255):
-102,102,102
+Completed task colour (default 50, 50, 50):
+50, 50, 50
 
-Uncompleted task colour (default 51,102,153,255):
-5, 25, 35
+Uncompleted task colour (default 0, 50, 80):
+0, 50, 80
 
-Important task colour (default 0,153,230,255):
-0, 28, 85
+Important task colour (default 0, 80, 120):
+0, 80, 120
 
-Text colour (default 255,255,255,255):
-255,255,255
+Text colour (default 255, 255, 255):
+255, 255, 255
 
-Overdue text colour (default 255,0,0,255):
-255,0,0
+Overdue text colour (default 255, 0, 0):
+255, 0, 0
 
-Button colour (default 153,51,102,255):
-69, 0, 28
+Button colour (default 10, 17, 40):
+10, 17, 40
 
-Drop-down colour (default 0,153,153,255):
-241, 135, 1
+Drop-down colour (default 0, 142, 200):
+0, 142, 200

@@ -65,10 +65,10 @@ BoxLayout:
             on_text: app.refresh_buttons()
         Button:
             text: "Reverse Sorting"
-            on_press: app.reverse_sorting()
+            on_release: app.reverse_sorting()
         Button:
             text: "Group / Ungroup"
-            on_press: app.group_or_ungroup()
+            on_release: app.group_or_ungroup()
         Label:
             text: "Add New Task:"
         TextInput:
@@ -93,16 +93,16 @@ BoxLayout:
             write_tab: False
         Button:
             text: "Add Task"
-            on_press: app.add_task()
+            on_release: app.add_task()
         Button:
             text: "Clear"
-            on_press: app.clear_widget_text(name_input, subject_input, priority_input, due_date_input, info_panel)
+            on_release: app.clear_widget_text(name_input, subject_input, priority_input, due_date_input, info_panel)
         Button:
             text: "Remove Completed"
-            on_press: app.remove_completed_tasks()
+            on_release: app.remove_completed_tasks()
         Button:
             text: "Help"
-            on_press: app.show_help_popup()
+            on_release: app.show_help_popup()
     BoxLayout:
         orientation: "vertical"
         Label:

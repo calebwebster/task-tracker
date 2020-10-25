@@ -30,11 +30,11 @@ Click on the priority button to the right of a task to change it's priority
 Settings for tasks file and sound file are stored in settings.txt in program
 folder. Change these values to add your own custom file path & sound.
 
-You can also change the program colour scheme by editing the RGBA values in
+You can also change the program colour scheme by editing the RGB values in
 settings.txt.
 
 Tasks with a priority of 3 or below are considered important. These tasks will
-be displayed with lighter coloured priority fields and a different message will
+be displayed with different coloured priority fields and a different message will
 be displayed when you complete/uncomplete them.
 
 
