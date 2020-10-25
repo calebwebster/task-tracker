@@ -61,7 +61,7 @@ class TaskTrackerApp(App):
     text_color = ()
     overdue_color = ()
     button_color = ()
-    priority_color = ()
+    dropdown_color = ()
 
     tasks_to_complete_text = StringProperty()
     info_panel_text = StringProperty()
@@ -280,8 +280,11 @@ class TaskTrackerApp(App):
                 if not line:
                     continue
                 elif line[0].isnumeric():  # check if line contains RGBA values
-                    colors.append([round(int(value) / 255, 2) for value in line.strip().split(",")])
-            self.completed_color, self.uncompleted_color, self.important_color, self.text_color, self.overdue_color, self.button_color, self.priority_color = colors
+                    values = [round(int(value) / 255, 2) for value in line.strip().split(",")]
+                    values.append(1)
+                    colors.append(values)
+                    print(colors)
+            self.completed_color, self.uncompleted_color, self.important_color, self.text_color, self.overdue_color, self.button_color, self.dropdown_color = colors
 
     def load_help_content(self):
         """Read help documentation from file."""

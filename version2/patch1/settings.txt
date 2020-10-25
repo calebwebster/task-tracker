@@ -9,22 +9,22 @@ trumpet.wav
 RGBA Colour Values
 
 Completed task colour (default 102,102,102,255):
-102,102,102,255
+102,102,102
 
 Uncompleted task colour (default 51,102,153,255):
-51,102,153,255
+5, 25, 35
 
 Important task colour (default 0,153,230,255):
-0,153,230,255
+0, 28, 85
 
 Text colour (default 255,255,255,255):
-255,255,255,255
+255,255,255
 
-Overdue colour (default 255,0,0,255):
-255,0,0,255
+Overdue text colour (default 255,0,0,255):
+255,0,0
 
 Button colour (default 153,51,102,255):
-153,51,102,255
+69, 0, 28
 
-Priority changer colour (default 0,153,153,255):
-0,153,153,255
+Drop-down colour (default 0,153,153,255):
+241, 135, 1

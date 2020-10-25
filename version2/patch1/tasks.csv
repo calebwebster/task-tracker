@@ -1,15 +1,15 @@
 Test,Test,1,None,False
-Test,Test,1,None,False
 Lecture Notes,Machine Learning,2,None,False
 Test,Test,3,21/4/2020,False
-Test,Test,3,21/4/2020,False
-Test,Ttest,3,14/4/2009,False
-Exam Prep,Cp1402,4,None,False
-Exam Prep,Cp1402,4,None,False
 Assignment 2,Cp1403,4,25/10/2020,False
 test,tests,4,15/12/2001,False
 Sprint Prep,Cp1403,5,13/10/2020,False
-Lecture Recordings,Cp1404,6,None,False
-Lecture Recordings,Cp1404,6,None,False
 Assignment Touch-Up,Programming 2,6,16/10/2020,False
 Assignment Touch-Up,Programming 2,6,16/10/2020,False
+Lecture Recordings,Cp1404,6,None,False
+Test,Test,1,None,True
+Test,Test,3,21/4/2020,True
+Test,Ttest,3,14/4/2009,True
+Exam Prep,Cp1402,4,None,True
+Exam Prep,Cp1402,4,None,True
+Lecture Recordings,Cp1404,6,None,True
