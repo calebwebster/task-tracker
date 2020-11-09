@@ -283,7 +283,6 @@ class TaskTrackerApp(App):
                     values = [round(int(value) / 255, 2) for value in line.strip().split(",")]
                     values.append(1)
                     colors.append(values)
-                    print(colors)
             self.completed_color, self.uncompleted_color, self.important_color, self.text_color, self.overdue_color, self.button_color, self.dropdown_color = colors
 
     def load_help_content(self):
