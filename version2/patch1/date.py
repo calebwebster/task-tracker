@@ -27,32 +27,18 @@ class Date:
 
     def __lt__(self, other):
         """Return True if date object is less than other, False if it is not."""
-        if not self.is_none and not other.is_none:
-            if self.year < other.year:
-                return True
-            elif self.year > other.year:
-                return False
-            else:
-                if self.month < other.month:
-                    return True
-                elif self.month > other.month:
-                    return False
-                else:
-                    if self.day < other.day:
-                        return True
-                    else:
-                        return False
-        elif not self.is_none and other.is_none:
-            return True
-        elif self.is_none and not other.is_none:
-            return False
-        else:
-            return False
+        s_parts = [self.year, self.month, self.day]
+        o_parts = [other.year, other.month, other.day]
+        for x in range(len(s_parts)):
+            if s_parts != o_parts:
+                return s_parts < o_parts
+        return False
 
     def is_valid_date(self):
         """Return True if date is valid, False if it is not."""
         months_dict = {1: 31, 2: 29, 3: 31, 4: 30, 5: 31, 6: 30,
                        7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
+        is_leap = lambda y: y % 4 == 0 and y % 100 != 0 or y % 400 == 0
         try:
             if self.year >= 0 and 0 < self.month <= 12 and 0 < self.day <= months_dict[self.month]:
                 if not self.is_leap_year() and self.month == 2 and self.day == 29:
@@ -61,16 +47,5 @@ class Date:
                     return True
             else:
                 return False
-        except ValueError:
-            return False
-        except IndexError:
-            return False
         except:
-            return False
-
-    def is_leap_year(self):
-        """Return True if year is a leap year, False if it is not."""
-        if not self.is_none:
-            return self.year % 4 == 0 and self.year % 100 != 0 or self.year % 400 == 0
-        else:
             return False
