@@ -41,7 +41,7 @@ class Date:
         is_leap = lambda y: y % 4 == 0 and y % 100 != 0 or y % 400 == 0
         try:
             if self.year >= 0 and 0 < self.month <= 12 and 0 < self.day <= months_dict[self.month]:
-                if not self.is_leap_year() and self.month == 2 and self.day == 29:
+                if not is_leap(self.year) and self.month == 2 and self.day == 29:
                     return False
                 else:
                     return True
