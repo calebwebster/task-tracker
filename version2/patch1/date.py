@@ -30,8 +30,8 @@ class Date:
         s_parts = [self.year, self.month, self.day]
         o_parts = [other.year, other.month, other.day]
         for x in range(len(s_parts)):
-            if s_parts != o_parts:
-                return s_parts < o_parts
+            if s_parts[x] != o_parts[x]:
+                return s_parts[x] < o_parts[x]
         return False
 
     def is_valid_date(self):
